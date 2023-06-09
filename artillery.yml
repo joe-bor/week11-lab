@@ -1,0 +1,14 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 10
+      arrivalRate: 2
+scenarios:
+  - flow:
+      - post:
+          url: "/users"
+          json:
+            name: "Test"
+            username: "Test-User"
+            email: "test@example.com"
+            password: "Password123"
