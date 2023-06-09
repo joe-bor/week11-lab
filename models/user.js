@@ -4,10 +4,11 @@ const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  username: { type: String, required: true, unique: true },
+  username: { type: String, required: true, unique: true }, // make username and email unique after load testing?
   email: { type: String, required: true, unique: true }, //validate email input
   password: { type: String, required: true },
 });
+
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 8);

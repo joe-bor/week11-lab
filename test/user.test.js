@@ -94,6 +94,40 @@ describe("Test user endpoints", () => {
       .set("Authorization", `Bearer ${token}`);
 
     expect(response.statusCode).toBe(200);
-    expect(response.body.message).toEqual("User Deleted");
+    expect(response.body.message).toEqual("User DELETED");
+  });
+
+  test("It should return a list of users", async () => {
+    const response = await request(app).post("/users").send({
+      name: "B",
+      username: "B-user",
+      email: "B@email.com",
+      password: "B-pw",
+    });
+    const response2 = await request(app).get("/users");
+
+    expect(response.statusCode).toBe(200);
+    expect(response2.statusCode).toBe(200);
+    expect(response.body.user.name).toEqual("B");
+    expect(response.body.user.username).toEqual("B-user");
+    expect(response.body.user.email).toEqual("B@email.com");
+  });
+
+  test("It should logout the user", async () => {
+    const user = new User({
+      name: "jacob z",
+      username: "jacobz-user",
+      email: "jacob.z@email.com",
+      password: "jacobpassword",
+    });
+
+    await user.save();
+    const token = await user.generateAuthToken();
+    const response = await request(app)
+      .post(`/users/logout`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(response.statusCode).toBe(200);
+    expect(token).toEqual(null);
   });
 });

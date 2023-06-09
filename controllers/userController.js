@@ -5,7 +5,7 @@ const morgan = require("morgan");
 
 exports.auth = async (req, res, next) => {
   try {
-    const token = req.header("Authorization").replace("Bearer", "");
+    const token = req.header("Authorization").replace("Bearer ", "");
     const data = jwt.verify(token, "secret");
     const user = await User.findOne({ _id: data._id });
     if (!user) {
@@ -68,6 +68,8 @@ exports.loginUser = async (req, res) => {
       res.status(400).send("Invalid login credentials");
     } else {
       const token = await user.generateAuthToken(); // if stored by default, how to access
+      //localStorage.setItem('token', token)
+      console.log(token);
       res.json({ user, token });
     }
   } catch (error) {
@@ -77,10 +79,10 @@ exports.loginUser = async (req, res) => {
 
 exports.logoutUser = async (req, res) => {
   try {
-    //find a user
-    const user = await User.findOne({ email: req.body.email });
+    //find a user -> req.user
+    token = null;
     //remove jwt token from user?
-    localStorage.clear();
+    res.json(token);
     console.log("logout successfully");
   } catch (error) {
     res.status(400).send({ message: error.message });
